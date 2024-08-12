@@ -2,57 +2,28 @@
 local character = game.Players.LocalPlayer.Character
 
 -- Get the coordinates
-local coords1 = CFrame.new(-59.5290947, 76.5237885, -43.702404, 1, 0, 0, 0, 1, 0, 0, 0, 1)
-local coords2 = CFrame.new(-77.8893661, 47.9033508, 1361.71387, 1, 0, 0, 0, 1, 0, 0, 0, 1)
-local coords3 = CFrame.new(51.7955399, 51.4295616, 2139.85278, 0.0957754925, 0.461788416, 0.881804109, 1.68558376e-08, 0.885876536, 0.46392107, 0.995402932, 0.0444322824, 0.0848452523)
+local coords = {
+CFrame.new(-59.5290947, 76.5237885, -43.702404, 1, 0, 0, 0, 1, 0, 0, 0, 1),
+CFrame.new(-77.8893661, 47.9033508, 1361.71387, 1, 0, 0, 0, 1, 0, 0, 0, 1),
+CFrame.new(51.7955399, 51.4295616, 2139.85278, 0.0957754925, 0.461788416, 0.881804109, 1.68558376e-08, 0.885876536, 0.46392107, 0.995402932, 0.0444322824, 0.0848452523)
+}
+
+-- Create a tween service
+local tweenService = game:GetService("TweenService")
 
 -- Function to fly to a coordinate
 local function flyToCoord(coord)
--- Toggle noclip mode on
-noclip()
+-- Create a tween info
+local tweenInfo = TweenInfo.new(5, Enum.EasingStyle.Sine, Enum.EasingDirection.Out)
 
--- Create a BodyPosition object
-local bodyPosition = Instance.new("BodyPosition")
-bodyPosition.Parent = character.HumanoidRootPart
+-- Create a tween
+local tween = tweenService:Create(character.HumanoidRootPart, tweenInfo, {CFrame = coord})
 
--- Create a BodyGyro object
-local bodyGryo = Instance.new("BodyGyro")
-bodyGryo.Parent = character.HumanoidRootPart
+-- Play the tween
+tween:Play()
 
--- Set the BodyPosition's position to the coordinate's position
-bodyPosition.Position = coord.Position
-
--- Set the BodyGryo's maxTorque to a high value
-bodyGryo.MaxTorque = Vector3.new(1000, 1000, 1000)
-
--- Smoothly move to the coordinate
-local distance = (character.HumanoidRootPart.Position - coord.Position).magnitude
-local speed = 50
-local time = distance / speed
-local startTime = tick()
-while tick() - startTime < time do
--- Calculate the position of the character
-local position = character.HumanoidRootPart.Position:Lerp(coord.Position, (tick() - startTime) / time)
-character.HumanoidRootPart.CFrame = CFrame.new(position)
-wait(0.01)
-end
-
--- Braking mechanism
-local brakingDistance = 5
-while (character.HumanoidRootPart.Position - coord.Position).magnitude > brakingDistance do
--- Calculate the position of the character
-local position = character.HumanoidRootPart.Position:Lerp(coord.Position, (character.HumanoidRootPart.Position - coord.Position).magnitude / brakingDistance)
-character.HumanoidRootPart.CFrame = CFrame.new(position)
-wait(0.01)
-end
-
--- Wait for 1 second
-wait(1)
-
--- Remove the BodyPosition and BodyGryo objects
-bodyPosition:Destroy()
-
-bodyGryo:Destroy()
+-- Wait for the tween to finish
+tween.Completed:Wait()
 end
 
 -- Noclip function
@@ -79,11 +50,14 @@ if Noclip then Noclip:Disconnect() end
 Clip = true
 end
 
--- Fly to the first coordinate
-flyToCoord(coords1)
+-- Toggle noclip mode on
+noclip()
 
--- Fly to the second coordinate
-flyToCoord(coords2)
+-- Fly to each coordinate
+for _, coord in ipairs(coords) do
+flyToCoord(coord)
+wait(1) -- wait for 1 second
+end
 
--- Fly to the third coordinate
-flyToCoord(coords3)
+-- Toggle noclip mode off
+clip()
