@@ -7,7 +7,7 @@ local coords2 = CFrame.new(-77.8893661, 47.9033508, 1361.71387, 1, 0, 0, 0, 1, 0
 local coords3 = CFrame.new(51.7955399, 51.4295616, 2139.85278, 0.0957754925, 0.461788416, 0.881804109, 1.68558376e-08, 0.885876536, 0.46392107, 0.995402932, 0.0444322824, 0.0848452523)
 
 -- Function to fly to a coordinate
-function flyToCoord(coord)
+local function flyToCoord(coord)
 -- Toggle noclip mode on
 noclip()
 
@@ -16,14 +16,14 @@ local bodyPosition = Instance.new("BodyPosition")
 bodyPosition.Parent = character.HumanoidRootPart
 
 -- Create a BodyGyro object
-local bodyGyro = Instance.new("BodyGyro")
-bodyGyro.Parent = character.HumanoidRootPart
+local bodyGryo = Instance.new("BodyGyro")
+bodyGryo.Parent = character.HumanoidRootPart
 
 -- Set the BodyPosition's position to the coordinate's position
 bodyPosition.Position = coord.Position
 
--- Set the BodyGyro's maxTorque to a high value
-bodyGyro.MaxTorque = Vector3.new(1000, 1000, 1000)
+-- Set the BodyGryo's maxTorque to a high value
+bodyGryo.MaxTorque = Vector3.new(1000, 1000, 1000)
 
 -- Smoothly move to the coordinate
 local distance = (character.HumanoidRootPart.Position - coord.Position).magnitude
@@ -49,7 +49,7 @@ end
 -- Wait for 1 second
 wait(1)
 
--- Remove the BodyPosition and BodyGyro objects
+-- Remove the BodyPosition and BodyGryo objects
 bodyPosition:Destroy()
 
 bodyGryo:Destroy()
